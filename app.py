@@ -20,12 +20,18 @@ def parse_page(html):
     
     return 'https://www.biorxiv.org' + url
 
-@app.route('/<string:paper_id>')
-def pages(paper_id):
+@app.route('/<string:source>/<string:paper_id>')
+def pages(source, paper_id):
     """Take the paper_id and returns the pdf url
     """
+    # only know how to resolve biorxiv pdf's right now
+    if source != 'biorxiv':
+        return flask.abort(400)
+
+    paper_id = paper_id.split('.', 1)[0]
     url = "https://www.biorxiv.org/content/10.1101/{}".format(paper_id)
     r = requests.get(url)
+
     try:
         url = parse_page(r.text)
         return flask.redirect(url)
