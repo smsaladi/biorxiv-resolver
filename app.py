@@ -2,12 +2,11 @@
 """
 
 import flask
-from flask import Flask
 
 import requests
 from bs4 import BeautifulSoup
 
-app = Flask(__name__)
+app = flask.Flask(__name__)
 
 def test_parse_page():
     pass
