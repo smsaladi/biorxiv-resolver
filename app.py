@@ -13,7 +13,6 @@ def test_parse_page():
 
 def parse_page(html):
     soup = BeautifulSoup(html, "lxml")
-
     a = soup.find_all("a", {"class": "article-dl-pdf-link"})[0]
     url = a.attrs['href']
     
@@ -27,14 +26,18 @@ def pages(source, paper_id):
     if source != 'biorxiv':
         return flask.abort(400)
 
-    paper_id = paper_id.split('.', 1)[0]
     url = "https://www.biorxiv.org/content/10.1101/{}".format(paper_id)
     r = requests.get(url)
 
     try:
         url = parse_page(r.text)
         return flask.redirect(url)
-    except:
+    except Exception as e:
+        # Biorxiv's behind Cloudflare which, from time to time
+        # denies access, return our best guess
+        print(e, 'Redirecting to: ' + url + '.full.pdf')
+        return flask.redirect(url + '.full.pdf')
+
         return flask.abort(400)
 
 if __name__ == "__main__":
