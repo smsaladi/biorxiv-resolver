@@ -141,13 +141,13 @@ class CustomDelegate
     d, sep, fileid = fileid.rpartition("/")
     
     # replace whatever extension with pdf
-    fileid, sep, ext = fileid.partition(".")
-    fp = '/media/saladi/iiif/' + d + '/' + fileid + '.pdf'
-    
+    paperid = fileid.gsub('.pdf', '')
+    fp = '/media/saladi/iiif/' + d + '/' + paperid + '.pdf'
+   
     # retrieve file if we don't have it
     if(not File.file?(fp))
       # to follow redirect: https://stackoverflow.com/a/39160567
-      uri = URI.parse('http://localhost:8300/' + d + '/' + fileid)
+      uri = URI.parse('http://localhost:8300/' + d + '/' + paperid)
       begin
         dl = uri.open(redirect: false)
       rescue OpenURI::HTTPRedirect => redirect
